@@ -1,24 +1,57 @@
 import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import schema from "./schema.js";
-import { getCollection } from "./db.js";
+import { db } from "./db.js";
 import { ObjectId } from "mongodb";
 
 const app = express();
 
 const root = {
   async exercise({ id }) {
-    const exercises = await getCollection("exercises");
-    const item = await exercises.findOne({ _id: ObjectId(id) });
-    return { ...item, id: item._id };
+    if (!id) return;
+
+    const item = await db(
+      "exercises",
+      async (exercises) => await exercises.findOne({ _id: ObjectId(id) })
+    );
+
+    if (!item) return;
+    return await { ...item, id: item._id };
   },
   async exercises() {
-    const exercises = await getCollection("exercises");
-    const items = (await exercises.find({}).toArray()).map((item) => ({
-      ...item,
-      id: item._id,
-    }));
-    return items;
+    return await db("exercises", async (exercises) => {
+      return (await exercises.find({}).toArray()).map((item) => ({
+        ...item,
+        id: item._id,
+      }));
+    });
+  },
+  async addExercise({ input }) {
+    if (!input) return;
+
+    const { insertedId } = await db(
+      "exercises",
+      async (exercises) => await exercises.insertOne(input)
+    );
+
+    if (!insertedId) return;
+    return { ...input, id: insertedId };
+  },
+  async updateExercise({ id, input }) {
+    const { modifiedCount } = await db("exercises", async (exercises) => {
+      const fields = { $set: input };
+      return await exercises.updateOne({ _id: ObjectId(id) }, fields);
+    });
+
+    if (!modifiedCount === 1) return;
+
+    const item = await db(
+      "exercises",
+      async (exercises) => await exercises.findOne({ _id: ObjectId(id) })
+    );
+
+    if (!item) return;
+    return await { ...item, id: item._id };
   },
 };
 

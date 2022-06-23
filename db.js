@@ -6,12 +6,17 @@ const client = new MongoClient(URI, {
   useUnifiedTopology: true,
 });
 
-const initalise = async () => {
-  await client.connect();
-  return client.db(DB_NAME);
-};
+export const db = async (name, operation) => {
+  const callback = async (resolve, reject) => {
+    if (!name || !operation) reject("Required arguments missing");
+    await client.connect();
+    const db = client.db(DB_NAME);
+    return resolve(operation(db.collection(name)));
+  };
 
-export const getCollection = async (name) => {
-  const db = await initalise();
-  return db.collection(name);
+  return new Promise(callback)
+    .catch((err) => console.log("err", err))
+    .finally(async () => {
+      // await client.close();
+    });
 };
