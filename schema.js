@@ -1,17 +1,21 @@
-import { buildSchema } from "graphql";
+const typeDefs = `
 
-const schema = buildSchema(`
+  type Query {
+    exercise(id: String, name: String): Exercise
+    exercises: [Exercise]
+  }
+
+  type Mutation {
+    addExercise(input: AddExerciseInput!): Exercise
+    updateExercise(id: String!, input: UpdateExerciseInput!): Exercise
+  }
+
   type Exercise {
     id: String!
     name: String!
     reps: Int
     sets: Int
     notes: String
-  }
-
-  type Query {
-    exercise(id: String, name: String): Exercise
-    exercises: [Exercise]
   }
 
   input AddExerciseInput {
@@ -28,10 +32,10 @@ const schema = buildSchema(`
     notes: String
   }
 
-  type Mutation {
-    addExercise(input: AddExerciseInput!): Exercise
-    updateExercise(id: String!, input: UpdateExerciseInput!): Exercise
+  schema {
+    query: Query
+    mutation: Mutation
   }
-`);
+`;
 
-export default schema;
+export default typeDefs;
