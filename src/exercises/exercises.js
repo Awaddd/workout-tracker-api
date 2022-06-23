@@ -50,3 +50,13 @@ export const updateExercise = async (_, { id, input }) => {
   if (!item) return;
   return await { ...item, id: item._id };
 };
+
+export const deleteExercise = async (_, { id }) => {
+  const { deletedCount } = await db(
+    "exercises",
+    async (exercises) => await exercises.deleteOne({ _id: ObjectId(id) })
+  );
+
+  if (!deletedCount === 0) return;
+  return id;
+};

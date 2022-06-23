@@ -8,6 +8,7 @@ const typeDefs = `
   type Mutation {
     addExercise(input: AddExerciseInput!): Exercise
     updateExercise(id: String!, input: UpdateExerciseInput!): Exercise
+    deleteExercise(id: String!): String
   }
 
   type Exercise {
