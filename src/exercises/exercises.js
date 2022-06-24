@@ -31,7 +31,7 @@ export const addExercise = async (_, { input }) => {
   );
 
   if (!insertedId) return;
-  return { ...input, id: insertedId };
+  return { exercise: { ...input, id: insertedId } };
 };
 
 export const updateExercise = async (_, { id, input }) => {
@@ -48,15 +48,17 @@ export const updateExercise = async (_, { id, input }) => {
   );
 
   if (!item) return;
-  return await { ...item, id: item._id };
+  return {
+    exercise: { ...item, id: item._id },
+  };
 };
 
-export const deleteExercise = async (_, { id }) => {
+export const removeExercise = async (_, { id }) => {
   const { deletedCount } = await db(
     "exercises",
     async (exercises) => await exercises.deleteOne({ _id: ObjectId(id) })
   );
 
   if (!deletedCount === 0) return;
-  return id;
+  return { id };
 };

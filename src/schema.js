@@ -6,9 +6,9 @@ const typeDefs = `
   }
 
   type Mutation {
-    addExercise(input: AddExerciseInput!): Exercise
-    updateExercise(id: String!, input: UpdateExerciseInput!): Exercise
-    deleteExercise(id: String!): String
+    addExercise(input: AddExerciseInput!): AddExercisePayload
+    updateExercise(id: String!, input: UpdateExerciseInput!): UpdateExercisePayload
+    removeExercise(id: String!): RemoveExercisePayload
   }
 
   type Exercise {
@@ -31,6 +31,18 @@ const typeDefs = `
     reps: Int
     sets: Int
     notes: String
+  }
+
+  type AddExercisePayload {
+    exercise: Exercise
+  }
+
+  type UpdateExercisePayload {
+    exercise: Exercise
+  }
+
+  type RemoveExercisePayload {
+    id: String
   }
 
   schema {

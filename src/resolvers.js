@@ -3,7 +3,7 @@ import {
   getExerciseByID,
   addExercise,
   updateExercise,
-  deleteExercise,
+  removeExercise,
 } from "./exercises/exercises.js";
 
 const resolvers = {
@@ -14,7 +14,7 @@ const resolvers = {
   Mutation: {
     addExercise,
     updateExercise,
-    deleteExercise,
+    removeExercise,
   },
 };
 
