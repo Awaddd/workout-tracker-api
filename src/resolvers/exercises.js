@@ -1,9 +1,11 @@
 import { db } from "../db.js";
 import { ObjectId } from "mongodb";
 
+const COLLECTION = "exercises";
+
 export const getAllExercises = async () => {
-  return await db("exercises", async (exercises) => {
-    return (await exercises.find({}).toArray()).map((item) => ({
+  return await db(COLLECTION, async (c) => {
+    return (await c.find({}).toArray()).map((item) => ({
       ...item,
       id: item._id,
     }));
@@ -11,18 +13,18 @@ export const getAllExercises = async () => {
 };
 
 // investigate tomorrow
+// investigate graphql context argument (db)
 export const getExerciseByID = async (_, { id }) => {
   if (!id) return;
 
   const item = await db(
-    "exercises",
-    async (exercises) => await exercises.findOne({ _id: ObjectId(id) })
+    COLLECTION,
+    async (c) => await c.findOne({ _id: ObjectId(id) })
   );
 
   const item2 = await db(
     "exerciseGroups",
-    async (collection) =>
-      await collection.findOne({ _id: ObjectId(item.exerciseGroupID) })
+    async (c) => await c.findOne({ _id: ObjectId(item.exerciseGroupID) })
   );
 
   if (!item) return;
@@ -40,8 +42,8 @@ export const addExercise = async (_, { input }) => {
   if (!input) return;
 
   const { insertedId } = await db(
-    "exercises",
-    async (exercises) => await exercises.insertOne(input)
+    COLLECTION,
+    async (c) => await c.insertOne(input)
   );
 
   if (!insertedId) return;
@@ -51,16 +53,16 @@ export const addExercise = async (_, { input }) => {
 export const updateExercise = async (_, { input }) => {
   const { id, payload } = input;
 
-  const { modifiedCount } = await db("exercises", async (exercises) => {
+  const { modifiedCount } = await db(COLLECTION, async (c) => {
     const fields = { $set: payload };
-    return await exercises.updateOne({ _id: ObjectId(id) }, fields);
+    return await c.updateOne({ _id: ObjectId(id) }, fields);
   });
 
   if (!modifiedCount === 1) return;
 
   const item = await db(
-    "exercises",
-    async (exercises) => await exercises.findOne({ _id: ObjectId(id) })
+    COLLECTION,
+    async (c) => await c.findOne({ _id: ObjectId(id) })
   );
 
   if (!item) return;
@@ -71,8 +73,8 @@ export const updateExercise = async (_, { input }) => {
 
 export const removeExercise = async (_, { id }) => {
   const { deletedCount } = await db(
-    "exercises",
-    async (exercises) => await exercises.deleteOne({ _id: ObjectId(id) })
+    COLLECTION,
+    async (c) => await c.deleteOne({ _id: ObjectId(id) })
   );
 
   if (!deletedCount === 1) return;
