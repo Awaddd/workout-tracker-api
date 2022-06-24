@@ -34,9 +34,11 @@ export const addExercise = async (_, { input }) => {
   return { exercise: { ...input, id: insertedId } };
 };
 
-export const updateExercise = async (_, { id, input }) => {
+export const updateExercise = async (_, { input }) => {
+  const { id, payload } = input;
+
   const { modifiedCount } = await db("exercises", async (exercises) => {
-    const fields = { $set: input };
+    const fields = { $set: payload };
     return await exercises.updateOne({ _id: ObjectId(id) }, fields);
   });
 

@@ -1,5 +1,4 @@
 const typeDefs = `
-
   type Query {
     exercise(id: String, name: String): Exercise
     exercises: [Exercise]
@@ -7,8 +6,13 @@ const typeDefs = `
 
   type Mutation {
     addExercise(input: AddExerciseInput!): AddExercisePayload
-    updateExercise(id: String!, input: UpdateExerciseInput!): UpdateExercisePayload
+    updateExercise(input: UpdateExerciseInput!): UpdateExercisePayload
     removeExercise(id: String!): RemoveExercisePayload
+  }
+
+  schema {
+    query: Query
+    mutation: Mutation
   }
 
   type Exercise {
@@ -27,6 +31,11 @@ const typeDefs = `
   }
 
   input UpdateExerciseInput {
+    id: String!
+    payload: UpdateExerciseInputPayload
+  }
+
+  input UpdateExerciseInputPayload {
     name: String
     reps: Int
     sets: Int
@@ -43,11 +52,6 @@ const typeDefs = `
 
   type RemoveExercisePayload {
     id: String
-  }
-
-  schema {
-    query: Query
-    mutation: Mutation
   }
 `;
 
