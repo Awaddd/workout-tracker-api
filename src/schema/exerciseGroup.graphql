@@ -1,0 +1,42 @@
+type Query {
+  exerciseGroup(id: String, name: String): ExerciseGroup
+  exerciseGroups: [ExerciseGroup]
+}
+
+type Mutation {
+  addExerciseGroup(input: AddExerciseGroupInput!): AddExerciseGroupPayload
+  updateExerciseGroup(
+    input: UpdateExerciseGroupInput
+  ): UpdateExerciseGroupPayload
+  removeExerciseGroup(id: String!): RemoveExerciseGroupPayload
+}
+
+type ExerciseGroup {
+  id: String!
+  name: String!
+}
+
+input AddExerciseGroupInput {
+  name: String!
+}
+
+type AddExerciseGroupPayload {
+  exerciseGroup: ExerciseGroup
+}
+
+input UpdateExerciseGroupInput {
+  id: String!
+  payload: UpdateExerciseGroupInputPayload
+}
+
+input UpdateExerciseGroupInputPayload {
+  name: String
+}
+
+type UpdateExerciseGroupPayload {
+  exerciseGroup: ExerciseGroup
+}
+
+type RemoveExerciseGroupPayload {
+  id: String
+}

@@ -10,6 +10,7 @@ export const getAllExercises = async () => {
   });
 };
 
+// investigate tomorrow
 export const getExerciseByID = async (_, { id }) => {
   if (!id) return;
 
@@ -18,8 +19,21 @@ export const getExerciseByID = async (_, { id }) => {
     async (exercises) => await exercises.findOne({ _id: ObjectId(id) })
   );
 
+  const item2 = await db(
+    "exerciseGroups",
+    async (collection) =>
+      await collection.findOne({ _id: ObjectId(item.exerciseGroupID) })
+  );
+
   if (!item) return;
-  return await { ...item, id: item._id };
+  return await {
+    ...item,
+    id: item._id,
+    exerciseGroup: {
+      ...item2,
+      id: item2._id,
+    },
+  };
 };
 
 export const addExercise = async (_, { input }) => {
@@ -61,6 +75,6 @@ export const removeExercise = async (_, { id }) => {
     async (exercises) => await exercises.deleteOne({ _id: ObjectId(id) })
   );
 
-  if (!deletedCount === 0) return;
+  if (!deletedCount === 1) return;
   return { id };
 };

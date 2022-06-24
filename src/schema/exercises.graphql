@@ -12,6 +12,7 @@ type Mutation {
 type Exercise {
   id: String!
   name: String!
+  exerciseGroup: ExerciseGroup
   reps: Int
   sets: Int
   notes: String
@@ -19,6 +20,7 @@ type Exercise {
 
 input AddExerciseInput {
   name: String!
+  exerciseGroupID: String!
   reps: Int
   sets: Int
   notes: String
