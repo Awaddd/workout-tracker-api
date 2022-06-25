@@ -12,11 +12,10 @@ export const getAllExerciseGroups = async () => {
   });
 };
 
-export const getExerciseGroupByID = async (_, { id }) => {
+export const getExerciseGroupByID = async (_, { id }, { db }) => {
   if (!id) return;
-  const item = await db(COLLECTION, async (c) =>
-    c.findOne({ _id: ObjectId(id) })
-  );
+
+  const item = await db.collection(COLLECTION).findOne({ _id: ObjectId(id) });
 
   if (!item) return;
   return { ...item, id };

@@ -14,9 +14,19 @@ export const db = async (name, operation) => {
     return resolve(operation(db.collection(name)));
   };
 
-  return new Promise(callback)
-    .catch((err) => console.log("err", err))
-    .finally(async () => {
-      // await client.close();
-    });
+  return new Promise(callback).catch((err) => console.log("err", err));
+};
+
+export const connectToDatabase = async () => {
+  const client = new MongoClient(URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  try {
+    const connection = await client.connect();
+    return connection.db(DB_NAME);
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -3,6 +3,7 @@ import { graphqlHTTP } from "express-graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import typeDefs from "./src/schema/typeDefs.js";
 import resolvers from "./src/resolvers.js";
+import { connectToDatabase } from "./src/db.js";
 
 const app = express();
 
@@ -10,9 +11,16 @@ const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 app.use(
   "/graphql",
-  graphqlHTTP({
-    schema,
-    graphiql: true,
+  graphqlHTTP(async () => {
+    const db = await connectToDatabase();
+
+    return {
+      schema,
+      graphiql: true,
+      context: {
+        db,
+      },
+    };
   })
 );
 

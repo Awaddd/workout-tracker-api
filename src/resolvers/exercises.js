@@ -12,8 +12,6 @@ export const getAllExercises = async () => {
   });
 };
 
-// investigate tomorrow
-// investigate graphql context argument (db)
 export const getExerciseByID = async (_, { id }) => {
   if (!id) return;
 
