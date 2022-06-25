@@ -1,4 +1,3 @@
-import { db } from "../db.js";
 import { ObjectId } from "mongodb";
 
 const COLLECTION = "exercises";
