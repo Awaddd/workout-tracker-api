@@ -3,10 +3,27 @@ import { ObjectId } from "mongodb";
 const COLLECTION = "exercises";
 
 export const getAllExercises = async (parent, args, { db }) => {
-  return (await db.collection(COLLECTION).find().toArray()).map((item) => ({
-    id: item._id,
-    ...item,
-  }));
+  return (await db.collection(COLLECTION).find().toArray()).map(
+    async (item) => {
+      const exerciseGroup = await db
+        .collection("exerciseGroups")
+        .findOne({ _id: ObjectId(item.exerciseGroupID) });
+
+      const data = {
+        ...item,
+        id: item._id,
+      };
+
+      if (exerciseGroup) {
+        data.exerciseGroup = {
+          id: exerciseGroup._id,
+          ...exerciseGroup,
+        };
+      }
+
+      return data;
+    }
+  );
 };
 
 export const getExerciseByID = async (parent, { id }, { db }) => {
@@ -15,14 +32,19 @@ export const getExerciseByID = async (parent, { id }, { db }) => {
     .collection("exerciseGroups")
     .findOne({ _id: ObjectId(item.exerciseGroupID) });
 
-  return {
+  const data = {
     ...item,
     id: item._id,
-    exerciseGroup: {
+  };
+
+  if (exerciseGroup) {
+    data.exerciseGroup = {
       id: exerciseGroup._id,
       ...exerciseGroup,
-    },
-  };
+    };
+  }
+
+  return data;
 };
 
 export const addExercise = async (parent, { input }, { db }) => {
@@ -31,16 +53,21 @@ export const addExercise = async (parent, { input }, { db }) => {
     .collection("exerciseGroups")
     .findOne({ _id: ObjectId(input.exerciseGroupID) });
 
-  return {
+  const data = {
     exercise: {
       ...input,
       id: insertedId,
-      exerciseGroup: {
-        id: exerciseGroup._id,
-        ...exerciseGroup,
-      },
     },
   };
+
+  if (exerciseGroup) {
+    data.exercise.exerciseGroup = {
+      id: exerciseGroup._id,
+      ...exerciseGroup,
+    };
+  }
+
+  return data;
 };
 
 export const updateExercise = async (parent, { input }, { db }) => {
@@ -55,16 +82,21 @@ export const updateExercise = async (parent, { input }, { db }) => {
     _id: ObjectId(item.exerciseGroupID),
   });
 
-  return {
+  const data = {
     exercise: {
       ...item,
       id: item._id,
-      exerciseGroup: {
-        id: exerciseGroup._id,
-        ...exerciseGroup,
-      },
     },
   };
+
+  if (exerciseGroup) {
+    data.exercise.exerciseGroup = {
+      id: exerciseGroup._id,
+      ...exerciseGroup,
+    };
+  }
+
+  return data;
 };
 
 export const removeExercise = async (parent, { id }, { db }) => {
