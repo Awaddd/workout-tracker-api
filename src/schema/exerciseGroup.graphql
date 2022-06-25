@@ -26,10 +26,10 @@ type AddExerciseGroupPayload {
 
 input UpdateExerciseGroupInput {
   id: String!
-  payload: UpdateExerciseGroupInputPayload
+  fields: UpdateExerciseGroupInputFields!
 }
 
-input UpdateExerciseGroupInputPayload {
+input UpdateExerciseGroupInputFields {
   name: String
 }
 

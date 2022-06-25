@@ -1,59 +1,36 @@
-import { db } from "../db.js";
 import { ObjectId } from "mongodb";
 
 const COLLECTION = "exerciseGroups";
 
-export const getAllExerciseGroups = async () => {
-  return await db(COLLECTION, async (exerciseGroups) => {
-    return (await exerciseGroups.find({}).toArray()).map((item) => ({
-      ...item,
-      id: item._id,
-    }));
-  });
+export const getAllExerciseGroups = async (parent, args, { db }) => {
+  return (await db.collection(COLLECTION).find().toArray()).map((item) => ({
+    ...item,
+    id: item._id,
+  }));
 };
 
-export const getExerciseGroupByID = async (_, { id }, { db }) => {
-  if (!id) return;
-
+export const getExerciseGroupByID = async (parent, { id }, { db }) => {
   const item = await db.collection(COLLECTION).findOne({ _id: ObjectId(id) });
-
-  if (!item) return;
   return { ...item, id };
 };
 
-export const addExerciseGroup = async (_, { input }) => {
-  if (!input) return;
-  const { insertedId } = await db(COLLECTION, async (c) => c.insertOne(input));
-
-  if (!insertedId) return;
+export const addExerciseGroup = async (parent, { input }, { db }) => {
+  const { insertedId } = await db.collection(COLLECTION).insertOne(input);
   return { exerciseGroup: { ...input, id: insertedId } };
 };
 
-export const updateExerciseGroup = async (_, { input }) => {
-  const { id, payload } = input;
-  const fields = { $set: payload };
+export const updateExerciseGroup = async (parent, { input }, { db }) => {
+  const { id, fields } = input;
 
-  const { modifiedCount } = await db(COLLECTION, async (c) =>
-    c.updateOne({ _id: ObjectId(id) }, fields)
-  );
+  const collection = db.collection(COLLECTION);
 
-  if (!modifiedCount === 1) return;
+  await collection.updateOne({ _id: ObjectId(id) }, { $set: fields });
+  const item = await collection.findOne({ _id: ObjectId(id) });
 
-  const item = await db(COLLECTION, async (c) =>
-    c.findOne({ _id: ObjectId(id) })
-  );
-
-  if (!item) return;
   return { exerciseGroup: { ...item, id: item._id } };
 };
 
-export const removeExerciseGroup = async (_, { id }) => {
-  if (!id) return;
-
-  const { deletedCount } = await db(COLLECTION, async (c) =>
-    c.deleteOne({ _id: ObjectId(id) })
-  );
-
-  if (!deletedCount === 1) return;
+export const removeExerciseGroup = async (parent, { id }, { db }) => {
+  await db.collection(COLLECTION).deleteOne({ _id: ObjectId(id) });
   return { id };
 };
