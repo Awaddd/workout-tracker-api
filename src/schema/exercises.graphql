@@ -28,11 +28,12 @@ input AddExerciseInput {
 
 input UpdateExerciseInput {
   id: String!
-  payload: UpdateExerciseInputPayload
+  fields: UpdateExerciseInputFields!
 }
 
-input UpdateExerciseInputPayload {
+input UpdateExerciseInputFields {
   name: String
+  exerciseGroupID: String
   reps: Int
   sets: Int
   notes: String
