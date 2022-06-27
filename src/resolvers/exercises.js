@@ -3,7 +3,9 @@ import { ObjectId } from "mongodb";
 const COLLECTION = "exercises";
 
 export const getAllExercises = async (parent, args, { db }) => {
-  return (await db.collection(COLLECTION).find().toArray()).map(
+  let filter = {};
+  if ("id" in args) filter = { exerciseGroupID: args.id };
+  return (await db.collection(COLLECTION).find(filter).toArray()).map(
     async (item) => {
       const exerciseGroup = await db
         .collection("exerciseGroups")
@@ -26,8 +28,15 @@ export const getAllExercises = async (parent, args, { db }) => {
   );
 };
 
-export const getExerciseByID = async (parent, { id }, { db }) => {
-  const item = await db.collection(COLLECTION).findOne({ _id: ObjectId(id) });
+export const getExerciseByID = async (parent, args, { db }) => {
+  let filter = args;
+  if ("id" in args) {
+    filter = { _id: ObjectId(args.id) };
+  }
+
+  const item = await db.collection(COLLECTION).findOne(filter);
+  if (!item) throw Error("Could not find exercise");
+
   const exerciseGroup = await db
     .collection("exerciseGroups")
     .findOne({ _id: ObjectId(item.exerciseGroupID) });

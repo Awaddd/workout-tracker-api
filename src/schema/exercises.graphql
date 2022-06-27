@@ -1,6 +1,6 @@
 type Query {
   exercise(id: String, name: String): Exercise
-  exercises: [Exercise]
+  exercises(id: String): [Exercise]
 }
 
 type Mutation {
