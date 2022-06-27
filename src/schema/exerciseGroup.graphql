@@ -14,10 +14,22 @@ type Mutation {
 type ExerciseGroup {
   id: String!
   name: String!
+  icon: ExerciseGroupIcon
+}
+
+type ExerciseGroupIcon {
+  name: String!
+  color: String
+}
+
+input ExerciseGroupIconInput {
+  name: String!
+  color: String
 }
 
 input AddExerciseGroupInput {
   name: String!
+  icon: ExerciseGroupIconInput!
 }
 
 type AddExerciseGroupPayload {
@@ -31,6 +43,12 @@ input UpdateExerciseGroupInput {
 
 input UpdateExerciseGroupInputFields {
   name: String
+  icon: UpdateExerciseGroupIconInput
+}
+
+input UpdateExerciseGroupIconInput {
+  name: String
+  color: String
 }
 
 type UpdateExerciseGroupPayload {
