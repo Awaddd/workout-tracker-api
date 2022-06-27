@@ -24,10 +24,11 @@ export const updateExerciseGroup = async (parent, { input }, { db }) => {
 
   const collection = db.collection(COLLECTION);
 
-  await collection.updateOne({ _id: ObjectId(id) }, { $set: fields });
   const item = await collection.findOne({ _id: ObjectId(id) });
+  const mergedFields = { ...item, ...fields };
+  await collection.updateOne({ _id: ObjectId(id) }, { $set: mergedFields });
 
-  return { exerciseGroup: { ...item, id: item._id } };
+  return { exerciseGroup: { ...mergedFields, id: item._id } };
 };
 
 export const removeExerciseGroup = async (parent, { id }, { db }) => {
